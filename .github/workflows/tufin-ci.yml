@@ -1,0 +1,45 @@
+name: OpenAPI diff with Tufin/oasdiff
+
+# https://github.com/Tufin/oasdiff
+
+on: 
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+
+permissions:
+  checks: write
+
+jobs:
+
+  tufin-asdiff:
+    name: Breaking Change Check with Tufin/oasdiff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout out pr branch
+        uses: actions/checkout@v3
+        with:
+          path: revision
+      - name: Check out main branch
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          path: base
+      - name: View working folder
+        run: |
+          ls -lash
+          tree
+      - name: Check for all changes
+        uses: Tufin/oasdiff-action@v2
+        with:
+          base: 'base/api.yaml'
+          revision: 'revision/api.yaml'
+      - name: Check for breaking changes only
+        uses: Tufin/oasdiff-action@v2
+        with:
+          base: 'base/api.yaml'
+          revision: 'revision/api.yaml'
+          format: 'yaml'
+          breaking-only: true
+          fail-on-diff: true
