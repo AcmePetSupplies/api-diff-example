@@ -19,6 +19,8 @@ servers:
 paths:
   /v1/catalog/categories:
     get:
+      deprecated: true
+      x-sunset: "2022-08-30"
       tags:
         - Categories
       summary: List all categories
