@@ -13,7 +13,7 @@ permissions:
 
 jobs:
 
-  tufin-asdiff:
+  tufin-oasdiff:
     name: Breaking Change Check with Tufin/oasdiff
     runs-on: ubuntu-latest
     steps:
