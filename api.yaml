@@ -17,58 +17,26 @@ servers:
       port:
         default: '8000'
 paths:
-  /v1/catalog/categories:
-    get:
-      tags:
-        - Categories
-      summary: List all categories
-      description: List all categories.
-      operationId: listCategories
-      parameters: []
-      responses:
-        '200':
-          description: OK
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/CategoriesResponse'
-              examples:
-                example-1:
-                  value:
-                    data:
-                      - name: Dogs
-                        categoryId: 1e32231d-b8a1-4145-b539-820301c2af64
-                    pagination:
-                      self: 'https://api.acme-pet-supplies.com/v1/catalog/categories?cursor=bccf5512'
-                      first: 'https://api.acme-pet-supplies.com/v1/catalog/categories?cursor=fa0a11ec'
-                      prev: 'https://api.acme-pet-supplies.com/v1/catalog/categories?cursor=0242ac120'
-                      next: 'https://api.acme-pet-supplies.com/v1/catalog/categories?cursor=651b1f06'
-                      last: 'https://api.acme-pet-supplies.com/v1/catalog/categories?cursor=3a1893e2'
-        '401':
-          description: Unauthorized
-          headers: {}
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/401Error'
-              examples:
-                example-1:
-                  value:
-                    message: Invalid authentication credentials
-
   /v1/catalog/products:
     get:
       tags:
         - Products
       summary: List all products
-      description: List all products.
+      description: List all products in Acme's catalog.
       operationId: listProducts
       parameters: []
       responses:
         '200':
           description: OK
-          headers: {}
+          headers: 
+            x-rate-limit-hour:
+              description: Request limit per hour
+              schema:
+                type: integer
+            x-rate-limit-remaining:
+              schema:
+                type: integer
+              description: The number of requests left for the time window.
           content:
             application/json:
               schema:
@@ -421,22 +389,6 @@ components:
           example: Invalid authentication credentials
       required:
         - message
-    CategoriesResponse:
-      title: CategoriesResponse
-      required:
-        - data
-        - pagination
-      type: object
-      additionalProperties: false
-      properties:
-        data:
-          type: array
-          maxItems: 25
-          items:
-            $ref: '#/components/schemas/Category'
-          description: ''
-        pagination:
-          $ref: '#/components/schemas/Pagination'
     ProductsResponse:
       title: ProductsResponse
       type: object
